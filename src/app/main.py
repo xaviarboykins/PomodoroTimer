@@ -1,50 +1,35 @@
 
-session_name = None
-work_session = "Work session"
-short_break_session = "Short break"
-long_break_session = "Long break"
+current_session = None
 
-is_user_working = False
+sessions = ["Work session", "Short break", "Work session", "Short break", "Work session", "Short break", "Work session",
+            "Long break"]
 
-break_count = 0
-work_minutes = 25
-short_break_minutes = 5
-long_break_minutes = 15
+session_data = {sessions[0]:{"duration": 25, "count": 0},
+                sessions[1]:{"duration": 5, "count": 0},
+                sessions[7]:{"duration": 15, "count": 0},
+}
 
-work_seconds = work_minutes * 60
-short_break_seconds = short_break_minutes * 60
-long_break_seconds = long_break_minutes * 60
+response = "y"
 
-print(session_name)
-print(f"Work session: {work_minutes} minutes\n"
-      f"Short break: {short_break_minutes} minutes\n"
-      f"Long break: {long_break_minutes} minutes")
+print("Pomodoro Schedule:")
 
-user_response = input("Ready to start work session? Y/N\n").lower()
+for session_num, session in enumerate(sessions, start=1):
+      # Print schedule
+      print(f"{session_num} - {session}")
 
-if user_response == "y":
-      session_name = work_session
+while response == "y":
+      for session in sessions:
+          response = input("Start Session? y/n: ").lower()
 
-      print("Work session started")
-      print(f"{session_name}: {work_minutes} minutes or {work_seconds} seconds")
+          while response not in ["y", "n"]:
+              print("Invalid response!")
+              response = input("Start Session? y/n: ").lower()
 
-      is_user_working = True
-elif user_response == "n":
-      print("Work session not started")
-else:
-      print("Invalid input")
-      print("Work session not started")
-
-if session_name == work_session:
-      user_response = input("Ready to start break? Y/N\n").lower()
-      if user_response == "y":
-            session_name = short_break_session
-
-            break_count = break_count + 1
-
-            print(f"{session_name}: {break_count} started")
-            print(f"{session_name}: {short_break_minutes} minutes or {short_break_seconds} seconds\n")
-
-            is_user_working = False
-      elif user_response == "n":
-            print("Short break not started")
+          if response == "y":
+              current_session = session
+              session_data[current_session]["count"] += 1
+              print(f"{current_session}: {session_data[current_session]["count"]} / {session_data[current_session]
+              ['duration']} minutes or {session_data[current_session]['duration'] * 60} seconds")
+          elif response == "n":
+              print("Goodbye!")
+              break
