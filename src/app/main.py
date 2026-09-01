@@ -1,35 +1,37 @@
+import session
 
 current_session = None
 
 sessions = ["Work session", "Short break", "Work session", "Short break", "Work session", "Short break", "Work session",
             "Long break"]
 
-session_data = {sessions[0]:{"duration": 25, "count": 0},
-                sessions[1]:{"duration": 5, "count": 0},
-                sessions[7]:{"duration": 15, "count": 0},
+session_data = {"Work session":{"duration": 25, "count": 0},
+                "Short break":{"duration": 5, "count": 0},
+                "Long break":{"duration": 15, "count": 0},
 }
 
-response = "y"
+if __name__ == "__main__":
 
-print("Pomodoro Schedule:")
+    pomo_schedule = session.build_session_schedule(sessions)
 
-for session_num, session in enumerate(sessions, start=1):
-      # Print schedule
-      print(f"{session_num} - {session}")
+    session.print_schedule(pomo_schedule)
 
-while response == "y":
-      for session in sessions:
-          response = input("Start Session? y/n: ").lower()
+    response = "y"
 
-          while response not in ["y", "n"]:
-              print("Invalid response!")
+    while response == "y":
+          for s in sessions:
               response = input("Start Session? y/n: ").lower()
 
-          if response == "y":
-              current_session = session
-              session_data[current_session]["count"] += 1
-              print(f"{current_session}: {session_data[current_session]["count"]} / {session_data[current_session]
-              ['duration']} minutes or {session_data[current_session]['duration'] * 60} seconds")
-          elif response == "n":
-              print("Goodbye!")
-              break
+              while response not in ["y", "n"]:
+                  print("Invalid response!")
+                  response = input("Start Session? y/n: ").lower()
+
+              if response == "y":
+                  session_data[s]["count"] += 1
+                  session_time = session.get_session_duration(s, session_data)
+
+                  print(f"{s}: {session_data[s]["count"]} / {session_time}")
+
+              elif response == "n":
+                  print("Goodbye!")
+                  break
