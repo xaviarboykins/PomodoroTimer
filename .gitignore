@@ -1,9 +1,25 @@
+# Python bytecode & caching
 __pycache__/
 *.py[cod]
-.venv/
-.idea/
 .pytest_cache/
-*.egg-info/
+
+# Environments & Build artifacts
+.venv/
 build/
 dist/
+*.egg-info/
+.hatch/
+
+# IDEs and Code Editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Temporary/OS files
 Docs/~$*
+.DS_Store
+Thumbs.db

@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pomodoro"
+description = """a time-management tool used to break work into 25-minute focused intervals separated by
+short breaks and rewards a long break after every 4th work interval"""
+version = "0.1.0"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "XaviarBoykins", email = "xaviar.dev@gmail.com" }
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.1.1"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pomodoro"]

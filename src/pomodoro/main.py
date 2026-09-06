@@ -1,5 +1,4 @@
-from session_types import SessionType
-from timer import PomodoroTimer
+from pomodoro.timer import PomodoroTimer
 
 
 if __name__ == "__main__":
@@ -8,3 +7,4 @@ if __name__ == "__main__":
     timer = PomodoroTimer(work_time=configured_session_times[0],
                           short_break_time=configured_session_times[1],
                           long_break_time=configured_session_times[2])
+    print("timer")

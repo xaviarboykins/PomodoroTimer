@@ -85,7 +85,13 @@ PomodoroTimer/
 ├── .gitignore
 │
 ├── src/
-│   └── app/
+│   └── pomodoro/
+│       └── type_definitions/
+│           ├── __init__.py
+│           └── session_types.py
+│       └── utils/
+│           ├── __init__.py
+│           └── helpers.py
 │       ├── __init__.py
 │       ├── main.py
 │       ├── timer.py
