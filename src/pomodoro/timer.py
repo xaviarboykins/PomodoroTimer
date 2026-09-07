@@ -30,6 +30,7 @@ class PomodoroTimer:
         # Timer
         self.remaining_seconds: int = 0
         self.is_paused = False
+        self.session_in_progress = False
 
     # Getters
     @property
@@ -53,9 +54,10 @@ class PomodoroTimer:
         if self.state == SessionType.IDLE:
             self._set_session(SessionType.WORK)
 
-        self.is_paused = False
+        self.session_in_progress = True
 
-        # HERE WE MAY Begin countdown of current session later
+        # progress session
+
 
     def pause(self) -> None:
         """Pauses Pomodoro Timer session sets is_paused to True"""
@@ -64,6 +66,7 @@ class PomodoroTimer:
     def resume(self) -> None:
         """Resumes Pomodoro Timer session: sets is_paused to False"""
         self.is_paused = False
+        self.start()
 
     def reset(self) -> None:
         """Resets Pomodoro Timer state completely and set state to IDLE"""
@@ -74,6 +77,14 @@ class PomodoroTimer:
         # reset Pomodoro Timer
         self.remaining_seconds = 0
         self.is_paused = False
+        self.session_in_progress = False
+
+    def tick(self) -> None:
+        if self.remaining_seconds > 0 and not self.is_paused and self.session_in_progress:
+            self.remaining_seconds -= 1
+            if self.remaining_seconds == 0:
+                self.complete_session()
+
 
     def skip(self) -> None:
         """Skips current Pomodoro Timer session and advances to the next session"""
@@ -83,7 +94,6 @@ class PomodoroTimer:
         """Completes Session and increases work session count if a work session was completed"""
         if self.state == SessionType.WORK:
             self.completed_work_sessions += 1
-
         self._advance_session()
 
     # Local Helpers
@@ -95,6 +105,7 @@ class PomodoroTimer:
         )
 
         self._set_session(next_session)
+        self.session_in_progress = False
 
 
     def _set_session(self, session_type: SessionType) -> None:
