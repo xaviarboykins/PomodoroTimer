@@ -1,10 +1,31 @@
 import pytest
+from pomodoro.config import TimerSettings
 from pomodoro.type_definitions import SessionType
 from pomodoro.timer import PomodoroTimer
 
 @pytest.fixture
 def pomodoro_timer():
     return PomodoroTimer()
+
+def test_timer_valid_settings(pomodoro_timer: PomodoroTimer):
+    """Tests that the timer has valid default settings from JSON"""
+    timer = PomodoroTimer()
+    assert timer.settings == TimerSettings(25,5,15,4)
+
+def test_timer_invalid_settings(pomodoro_timer: PomodoroTimer):
+    """Tests that invalid timer settings raise ValueError."""
+
+    with pytest.raises(ValueError, match=".*must be an int greater than 0.*"): # Negative time for work
+        pomodoro_timer.settings = TimerSettings(-1,5,10,4)
+
+    with pytest.raises(ValueError, match=".*must be an int greater than 0.*"): # Zero time for short break
+        pomodoro_timer.settings = TimerSettings(25,0,15,4)
+
+    with pytest.raises(ValueError, match=".*must be an int greater than 0."): # Negative time for long break
+        pomodoro_timer.settings = TimerSettings(25,5,-1,4)
+
+    with pytest.raises(ValueError, match=".*must be an int greater than 0."): # no work requirement for long breaks
+        pomodoro_timer.settings = TimerSettings(25,5,15,0)
 
 def test_pomodoro_timer_start(pomodoro_timer: PomodoroTimer):
     """Tests that the pomodoro timer starts correctly and completes a session"""

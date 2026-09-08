@@ -1,3 +1,4 @@
+from pomodoro.config import TimerSettings
 from pomodoro.type_definitions import SessionType
 from pomodoro.utils import format_time, minutes_to_seconds
 from pomodoro.session import get_next_session
@@ -12,19 +13,24 @@ class PomodoroTimer:
     Controls starting sessions and transitions between work and break sessions based on the rule: every four
     completed WORK sessions earns a LONG_BREAK, otherwise results in a SHORT_BREAK session.
     """
-    def __init__(self, work_time: int = 25,
-                 short_break_time: int = 5,
-                 long_break_time: int = 15) -> None:
+    def __init__(self, settings: TimerSettings | None = None) -> None:
+        # Settings
+        # If no settings are passed, safely fall back to loading the JSON file
+        if settings is None:
+            settings = TimerSettings().load_from_json()
+
+        self.settings: TimerSettings = settings
         # Sessions
         # Initialize session tracking data
         self.session_data: dict[str, dict[str, int]] = {
-            "WORK": {"duration": work_time},
-            "SHORT_BREAK": {"duration": short_break_time},
-            "LONG_BREAK": {"duration": long_break_time},
+            "WORK": {"duration": settings.work_minutes},
+            "SHORT_BREAK": {"duration": settings.short_break_minutes},
+            "LONG_BREAK": {"duration": settings.long_break_minutes},
         }
         self.state: SessionType = SessionType.IDLE
+        self.work_sessions_before_long_break = settings.work_sessions_before_long_break
 
-        # Tracks complete
+        # Tracks completes sessions
         self.completed_work_sessions = 0
 
         # Timer
@@ -80,7 +86,8 @@ class PomodoroTimer:
         self.session_in_progress = False
 
     def tick(self) -> None:
-        if self.remaining_seconds > 0 and not self.is_paused and self.session_in_progress:
+        if self.remaining_seconds > 0 and not self.is_paused and self.session_in_progress\
+                :
             self.remaining_seconds -= 1
             if self.remaining_seconds == 0:
                 self.complete_session()
@@ -101,7 +108,8 @@ class PomodoroTimer:
         """Advances the timer to the next Pomodoro session."""
         next_session = get_next_session(
             self.state,
-            self.completed_work_sessions
+            self.completed_work_sessions,
+            self.work_sessions_before_long_break,
         )
 
         self._set_session(next_session)
